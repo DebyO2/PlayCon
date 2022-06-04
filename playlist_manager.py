@@ -3,13 +3,19 @@ import os
 def clean(playlist:str):
     path = os.path.join("playlists",playlist)
     try:
-        with open(path,"w") as f:
-            
-            with open(path,"r") as r:
-
-                content = r.read()
-                new_content = content.replace("\n","")
-                f.write(new_content)
+        with open(path,"r+") as f:
+            content = f.read()
+            new_content = content.split("\n")
+            while "" in new_content:
+                new_content.remove("")
+            f.truncate(0)
+            f.seek(0)
+            for i in new_content:
+                if new_content.index(i)+1 == len(new_content):
+                    f.write(i)
+                else:
+                    f.write(i+"\n")
+            print(f.read())
     except Exception as e:
         print("Error")
         print(e)
