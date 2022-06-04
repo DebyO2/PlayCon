@@ -113,7 +113,7 @@ if __name__ == '__main__':
             
                     asyncio.run(search(play=True))
 
-            elif command == "exit":
+            elif command == "exit" or command == "e":
                 break
                 
 
@@ -133,8 +133,9 @@ if __name__ == '__main__':
                     os.remove(puth)
 
                     print(f"deleted: {sunc} ....")
-                except:
+                except Exception as e:
                     print("oops something went wrong")
+                    print(e)
             
             elif command == "show":
             
@@ -142,7 +143,7 @@ if __name__ == '__main__':
             
 
             elif command == "help":
-                print('| play : to play the songs\n| exit : to exit\n| delete : to delete a song from the database\n| show : shows all the songs in database\n| download : download songs\n| playlist show : show all the playlists\n| playlist show songs : show playlists with all the songs inside them\n| playlist add songs : add songs to your playlist')
+                print('| play : to play the songs\n| exit/e : to exit\n| delete : to delete a song from the database\n| show : shows all the songs in database\n| download : download songs\n| playlist show : show all the playlists\n| playlist show songs : show playlists with all the songs inside them\n| playlist add songs : add songs to your playlist')
 
             elif command == "download":
                 asyncio.run(search(play=False))
@@ -153,6 +154,42 @@ if __name__ == '__main__':
                 
                 if command == "playlist show songs":
                     showSongs(2)
+                
+                if command == "playlist create":
+                    name = input("\nEnter the name of the new playlist: ")
+                    playlist_manager.create_playlist(name)
+
+                if command == "playlist delete":
+                    playlists = showSongs(2)
+                    pl = int(input("\nEnter the name of the playlist you want to delete: ")) - 1
+                    name = playlists[pl]
+                    # print(name)
+                    playlist_manager.delete_playlist(name)
+                
+                if command == "playlist delete songs":
+                    
+                    playlists = showSongs(2)
+                    pl = int(input("\nEnter the name of the playlist you want to delete the songs from(1,2,3,..): ")) - 1
+                    playlist_name = playlists[pl]
+                    # print(pl)
+                    # print(playlists)
+                    # print(playlist_name)
+                    path = os.path.join("playlists",playlist_name)
+                    songhs = []
+                    with open(path,"r") as f:
+                        print("\n")
+                        songs = f.read().split("\n")
+                        a = len(str(len(songs)))
+                        for line in range(len(songs)):
+                            if songs[line]:
+                                print(f"{' '*(a-len(str(line+1)))}{line+1} || {songs[line].removeprefix(branch)}")
+                                songhs.append(songs[line].removeprefix(branch))
+                        
+                    nu = list(map(lambda x: int(x) -1,input("\nEnter the song number you want to delete(1,2,3...): ").strip().split(' ')))
+                    for yo in nu:
+                        # print(songhs[yo])
+                        song = songhs[yo]
+                        playlist_manager.delete_song(song,playlist_name)
                 if command == "playlist add songs":
                     # pass
                     # print("which playlist do u want to add to? ")
@@ -162,7 +199,7 @@ if __name__ == '__main__':
                     # print("which song do u want to add to the playlist? ")
                     songs = showSongs(0)
                     
-                    sl = list(map(lambda x: int(x) -1,input("\nwhich songs do u want to add to the playlist? (1,2,3...): ").split(' ')))
+                    sl = list(map(lambda x: int(x) -1,input("\nwhich songs do u want to add to the playlist? (1,2,3...): ").strip().split(' ')))
 
                     for hmm in sl:
                         song_name = songs[hmm]
@@ -172,5 +209,6 @@ if __name__ == '__main__':
                 
             else:
                 print("give the computer to your mom kid")
-        except:
+        except Exception as e:
             print("oops something went wrong")
+            print(e)
