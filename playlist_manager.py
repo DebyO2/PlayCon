@@ -1,9 +1,24 @@
 import os
 
+def clean(playlist:str):
+    path = os.path.join("playlists",playlist)
+    try:
+        with open(path,"w") as f:
+            
+            with open(path,"r") as r:
+
+                content = r.read()
+                new_content = content.replace("\n","")
+                f.write(new_content)
+    except Exception as e:
+        print("Error")
+        print(e)
+
 def create_playlist(name:str):
     path = os.path.join("playlists",f"{name}.txt")
     if not os.path.exists(path):
         f = open(path,"w+")
+        print(f"Created playlist {name}")
         return
     else:
         print("Playlist already exists")
@@ -28,13 +43,14 @@ def add_song(name_with_path:str,playlist_name:str):
                 
                 print("Song added to the playlist")
 
-    except:
-        print("oops something went wrong")
+    except Exception as e:
+        print("something went wrong")
+        print(e)
 
 # add_song("song2.mp3","favs")
 
 def delete_song(name_with_path:str,playlist_name:str):
-    path = os.path.join("playlists",f"{playlist_name}.txt")
+    path = os.path.join("playlists",playlist_name)
     try:
         with open(path,"r+") as f:
             prev_content = f.read()
@@ -43,21 +59,22 @@ def delete_song(name_with_path:str,playlist_name:str):
                 f.seek(0)
                 f.truncate()
                 f.write(new_content)
+                clean(playlist_name)
                 print("Song deleted from the playlist")
                 return
             elif name_with_path not in prev_content:
                 print("Song not found in the playlist")
                 return
-    except:
-        print("oops something went wrong")
-
+    except Exception as e:
+        print("something went wrong")
+        print(e)
 # delete_song("song2.mp3","favs")
 
 def delete_playlist(name:str):
-    path = os.path.join("playlists",f"{name}.txt")
+    path = os.path.join("playlists",name)
     try:
         os.remove(path)
         print("Playlist deleted")
     except:
-        print("oops something went wrong")
+        print("playlist not found")
 # delete_playlist("favs2")
